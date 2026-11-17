@@ -17,7 +17,33 @@ uživatel dodává znalost rodiny, rozhoduje sporná místa a schvaluje, co jde 
 Najdeš v ní `tools/` (nástroje), `template/` (šablona projektu a webu) a `reference/` (podrobné návody – čti je, až je potřebuješ):
 `instalace.md` (příprava počítače, Windows), `matriky.md` (čtení matrik, pasti), `portaly.md` (archivy), `metodika.md`
 (spojování záznamů, ztotožnění, mrtvé body, prameny mimo ČR), `data.md` (formát dat, import stromu), `pribehy.md`,
-`web.md`, `soukromi.md`.
+`web.md`, `soukromi.md`; navíc ve forku `rozsireni.md` (podrobnosti k pravidlům níže), `lokalni_knihovna.md`
+(svazky stažené na disk), `pomocnici.md` (hotová zadání pomocníků), `souvislosti.md` (kde hledat, když matrika mlčí).
+
+## Pravidla uživatele (fork jandadik) – mají přednost před vším níže
+1. **Nejdřív vytěž, co uživatel řekl** (`rozsireni.md` → Fáze 0.5). Každé jméno, rok a místo je hotová stopa: hned
+   u každé osoby najdi nejbližší zápis, který je online (narozen před ~1925 → narození; později → sňatek rodičů;
+   zemřel před 30+ lety → úmrtí), a z nálezu pokračuj na rodiče a sourozence. Uživatel tě nesmí muset navádět.
+2. **Neptej se, pracuj sám – povolení máš předem.** Uživatel dal trvalé svolení (nedal-li ho, zeptej se jednou na začátku):
+   při práci na rodokmenu se neptej (hledání, pomocníci, zápis do dat, příběhy, uložení do gitu, obnovení webu), nezastavuj
+   se a projdi všechny větve, kde je co hledat. Ptej se jen na údaje, které zná jen rodina, a na rozhodnutí sporných čtení.
+   Na začátku delší práce zapni nespavý režim (`request_keep_awake`, `until: "session_idle"`), je-li k dispozici.
+   Výjimky zůstávají: nic neodesílej a nezveřejňuj, data rodiny nikdy na GitHub, hesla nezadávej, brzdu neobcházej.
+3. **Nejdřív lokální knihovna** (`lokalni_knihovna.md`): než stáhneš snímek nebo otevřeš knihu v prohlížeči, zkus
+   `tools/knihovna.py najdi <signatura> [<snímek>]`. Snímek z disku archiv nezatěžuje.
+4. **Stejnojmenné obce ve všech archivech** – než napíšeš „nenalezeno“, vypiš všechny obce toho jména ve všech archivech
+   a projdi je podle nápovědy od rodiny. **Jiná vyznání a civilní matriky** (evangelíci, církev československá, civilní
+   matriky od 1919), když katolická mlčí.
+5. **Rejstříky dřív než listování**; listovat víc než ~20 snímků bez rejstříku smíš až po „bráně“ (`rozsireni.md`).
+6. **Pomocníci souběžně, ověření sám** (`pomocnici.md`): nezávislé větve 2–4 pomocníkům najednou (na jeden archiv jeden),
+   slepé hledání `model: "sonnet"`, dobré vodítko bez potvrzení silnějšímu modelu. Každý nález před zápisem ověř sám.
+   **Slepá ulice** (dvě kola bez výsledku): `tools/fronta.py`, `tools/kmotri.py`, zdroje mimo matriky, odpojení předci.
+7. **Před „nenalezeno“ u předků před 1800** projdi prameny mimo matriku (`rozsireni.md`, `souvislosti.md` E–F: vrchnost,
+   soupisy poddaných, katastry, mlýny, vojenské prameny, kmotři).
+8. **Odpovědi:** česky, krátce, bez žargonu; nejdřív výsledek (koho jsem našel, nejstarší dochovaný zápis), pak co dál.
+   Během dlouhé práce každých pár minut jednou větou řekni, co děláš.
+9. **Web** po větším nálezu obnov (`npm run data && npm run build`, u lokálního webu i náhled). Stránka **Celý strom**
+   (`/strom/`) ukazuje všechny známé předky najednou.
 
 ## Jak mluvit s uživatelem
 - **Česky, stručně, lidsky.** Žádný žargon bez vysvětlení (Kekulé, N/O/Z, apu…). Místo „commitnu“ řekni „uložím“.
@@ -85,7 +111,8 @@ Základní smyčka pro každou osobu:
    `python3 -I tools/portafontium.py obec "Obec"`, Praha: `tools/ahmp_search.sh`; SOA Praha, MZA Brno a SOA Třeboň
    jen v prohlížeči, ostatní v `reference/portaly.md`. Sňatek hledej nejdřív ve farnosti nevěsty. Je-li ke svazku
    rejstřík, začni jím.
-4. **Stáhni snímek** do `pracovni/<svazek>/` a nech ho tam – před dalším stažením se podívej, jestli ho už nemáš.
+4. **Snímek nejdřív z lokální knihovny** (`tools/knihovna.py najdi`), jinak ho **stáhni** do `pracovni/<svazek>/`
+   a nech ho tam – před dalším stažením se podívej, jestli ho už nemáš.
    Najdi zápis, **přečti ho sám ze snímku** (přiblíž si výřez v plném rozlišení).
 5. **Zapiš nález** (vždy všech 6 kroků, i když to zdržuje):
    1. svazek do `data/svazky.json` (ARON: `python3 -I tools/aron_img.py <apu> svazek`, jinak `tools/zapis.py svazky`),
@@ -243,6 +270,10 @@ a `zdroje/` (výřezy pro web / plné rozlišení), `dokumenty/` (originály od 
 | `matricula_dl.sh`, `matricula_batch.sh` | snímky z Matriculy (Rakousko, Bavorsko, Polsko…) |
 | `anno.py`, `anno_snap.py`, `kramerius.py` | noviny: ANNO (rakouské, `--ztraty` = seznamy ztrát 1914–1919), Kramerius (české) |
 | `mapa_knihy.py` | mapa knihy po vsích a montáž sloupce jmen (`matriky.md`) |
+| `knihovna.py` | lokální knihovna svazků na disku: `najdi`, `zaznam(y) [--uloz]`, `soupis`, `rozbal` (`lokalni_knihovna.md`) |
+| `fronta.py [--vse]` | předci bez rodičů od nejlevnějšího dalšího kroku → `pracovni/fronta.md` (uzavřené rody vynechá) |
+| `kmotri.py` | síť kmotrů a svědků (příjmení u ≥ 2 zápisů) → `pracovni/kmotri.md`; stopa na rodinu matky |
+| `oprav_odkazy.py` | opraví v `data/pribeh.md` odkazy na osoby, jejichž adresa se změnila (po `npm run data`) |
 | `cache.py` | sdílená mezipaměť snímků; uložení snímku z prohlížeče |
 | `ged_import.py`, `ftb_export.py` | rodinný strom (GEDCOM, záloha MyHeritage) – `data.md` |
 | `vyrez.py`, `ramecek.py`, `overit.py` | výřez zápisu (zlomky stránky), rámeček (zlomky výřezu, `--pozn` poznámka), ověření čtení na dvou polovinách |

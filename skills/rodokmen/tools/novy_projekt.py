@@ -372,8 +372,8 @@ def nastaveni(dst, hlidac):
 
 
 def _verze(text):
-    m = re.fullmatch(r"v?(\d+)\.(\d+)\.(\d+)", (text or "").strip())
-    return tuple(int(x) for x in m.groups()) if m else None
+    m = re.fullmatch(r"v?(\d+)\.(\d+)\.(\d+)(?:\+jan\.(\d+))?", (text or "").strip())   # fork: 0.10.2+jan.1
+    return tuple(int(x or 0) for x in m.groups()) if m else None
 
 
 def zkontroluj_verzi(dst):

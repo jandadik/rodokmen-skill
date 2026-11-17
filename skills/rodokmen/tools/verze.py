@@ -34,8 +34,8 @@ DEN = 24 * 3600
 
 def cislo(v):
     """„v0.10.0“ → (0, 10, 0); nesrozumitelná verze → None."""
-    m = re.fullmatch(r"v?(\d+)\.(\d+)\.(\d+)", (v or "").strip())
-    return tuple(int(x) for x in m.groups()) if m else None
+    m = re.fullmatch(r"v?(\d+)\.(\d+)\.(\d+)(?:\+jan\.(\d+))?", (v or "").strip())   # fork: 0.10.2+jan.1
+    return tuple(int(x or 0) for x in m.groups()) if m else None
 
 
 def cti(cesta):
@@ -94,10 +94,11 @@ def nainstalovany(projekt_dir):
         verze = cti(os.path.join(cesta, "VERZE")) or z.get("version")
         if cislo(verze):
             return verze, cesta
-    rucne = os.path.join(cfg, "skills", "rodokmen")
-    verze = cti(os.path.join(rucne, "VERZE"))
-    if cislo(verze):
-        return verze, rucne
+    for jm in ("rodokmen", "rodokmen2"):   # fork bývá nainstalovaný jako rodokmen2
+        rucne = os.path.join(cfg, "skills", jm)
+        verze = cti(os.path.join(rucne, "VERZE"))
+        if cislo(verze):
+            return verze, rucne
     return desktop()
 
 
@@ -143,6 +144,10 @@ def main():
             jak = ("jako plugin: `claude plugin marketplace update rodokmen-skill` a `claude plugin update\n"
                    "  rodokmen@rodokmen-skill`, pak restart Claude Code (natrvalo: v /plugin zapnout automatické aktualizace;\n"
                    "  když příkaz `claude` nejde spustit, stejné příkazy jdou v Claude Code přes /plugin)")
+        elif os.path.isdir(os.path.join(os.path.realpath(SKILL), "..", "..", ".git")):   # fork v gitu (jandadik)
+            jak = (f"fork v gitu ({os.path.realpath(os.path.join(os.path.realpath(SKILL), '..', '..'))}): "
+                   "`git fetch upstream && git rebase upstream/main`,\n  vyřešit případné střety s úpravami forku, "
+                   "zvýšit VERZE na <nová verze>+jan.1 a restartovat Claude Code")
         else:                                       # nakopírovaný ručně (~/.claude/skills/rodokmen …)
             jak = (f"ručně nakopírovaný skill ({SKILL}): stáhnout novou verzi z https://github.com/sarsonj/rodokmen-skill\n"
                    "  (Code → Download ZIP), složkou skills/rodokmen nahradit tu stávající a restartovat Claude")
