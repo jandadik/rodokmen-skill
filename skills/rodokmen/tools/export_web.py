@@ -282,6 +282,7 @@ def main():
             family=None, ownFamily=None, path=path,
             side=[dict(name=s["n"], text=s.get("t", ""), records=[r for r in s.get("r", []) if r in recs]) for s in SIDE if s["k"] == k],
             docs=[dict(img=d["img"], caption=d.get("popis", "")) for d in docs_cfg if k in d.get("osoby", [])],
+            portrait=next((dict(img=d["img"], caption=d.get("popis", "")) for d in docs_cfg if k in d.get("portret", [])), None),
             children=[slugs[c] for c in [k // 2] + [a // 2 for a in aliases_of.get(k, [])] if k > 1 and c in slugs],
             also=[dict(k=a, rel=relation(a), line=line_of(a), child=slugs.get(a // 2)) for a in aliases_of.get(k, [])],
         )
@@ -380,6 +381,9 @@ def main():
     has_story = os.path.exists(os.path.join(DATA, "pribeh.md"))
     public_cfg = {k: v for k, v in cfg.items() if k != "prihlaseni"}
     public_cfg["maPribeh"] = has_story
+    # další příběhy (web.json → dalsi_pribehy: [{soubor, slug, menu, tlacitko, rod}]), soubory v data/
+    public_cfg["dalsi_pribehy"] = [d for d in cfg.get("dalsi_pribehy", [])
+                                   if os.path.exists(os.path.join(DATA, d["soubor"]))]
     site = dict(config=public_cfg, places=places, root=slugs[1], aliases={a: slugs[a] for a in SAME}, people=people,
                 families=families, records=records, lines=lines,
                 issues=[dict(title=i, text="") if isinstance(i, str) else dict(title=i[0], text=i[1]) for i in ISSUES
@@ -396,6 +400,12 @@ def main():
         write(os.path.join(gen_dir, dst), strip_comments(re.sub(r"^# .*\n", "", text, count=1)))
     story = os.path.join(DATA, "pribeh.md")
     write(os.path.join(gen_dir, "pribeh.md"), strip_comments(open(story, encoding="utf-8-sig").read()) if has_story else "---\ntitle: Příběh\nlead: ''\n---\n")
+    extra_dir = os.path.join(gen_dir, "pribehy")
+    os.makedirs(extra_dir, exist_ok=True)
+    for f in os.listdir(extra_dir):
+        os.remove(os.path.join(extra_dir, f))
+    for d in public_cfg["dalsi_pribehy"]:
+        write(os.path.join(extra_dir, d["slug"] + ".md"), strip_comments(open(os.path.join(DATA, d["soubor"]), encoding="utf-8-sig").read()))
 
     hrefs = os.path.join(gen_dir, "fan_hrefs.json")
     json.dump({k: f"/osoba/{s}/" for k, s in slugs.items()}, open(hrefs, "w", encoding="utf-8", newline="\n"))
@@ -431,6 +441,8 @@ def main():
     # odkazy v textech, které nikam nevedou (adresa osoby se změní třeba doplněním roku narození: jan-novak → jan-novak-1798)
     targets = dict(osoba=people, zdroj=recs, rod=lines, rodina=families)
     texts = {f: open(os.path.join(gen_dir, f), encoding="utf-8").read() for f in ("pribeh.md", "zajimavosti.md")}
+    for d in public_cfg["dalsi_pribehy"]:
+        texts[d["soubor"]] = open(os.path.join(extra_dir, d["slug"] + ".md"), encoding="utf-8").read()
     texts["web.json"] = json.dumps(cfg, ensure_ascii=False)
     texts["osoby.py (hypotézy)"] = json.dumps(hypotheses, ensure_ascii=False)
     broken = [(f, m.group(0)) for f, t in texts.items()

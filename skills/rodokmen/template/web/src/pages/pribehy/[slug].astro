@@ -1,0 +1,38 @@
+---
+// Jeden příběh (hlavní i další) – seznam v lib/pribehy.js
+import Base from '../../layouts/Base.astro';
+import { docs, lineByK, href } from '../../lib/data.js';
+import { pribehy } from '../../lib/pribehy.js';
+
+export function getStaticPaths() {
+  return pribehy.map((p) => ({ params: { slug: p.slug }, props: { slug: p.slug } }));
+}
+
+const p = pribehy.find((x) => x.slug === Astro.props.slug);
+const { Content, frontmatter } = p.mod;
+const line = lineByK[p.rod];
+const ostatni = pribehy.filter((x) => x.slug !== p.slug);
+---
+<Base title={frontmatter.title}>
+  <p class="crumbs"><a href="/pribehy/">všechny příběhy</a>{line && <> · <a href={href.line(line.slug)}>rod {line.name}</a></>} · <a href="/zajimavosti/">zajímavosti</a></p>
+  <h1>{frontmatter.title}</h1>
+  {frontmatter.lead && <p class="lead">{frontmatter.lead}</p>}
+  <div class="prose"><Content /></div>
+
+  <div class="next-step">
+    <p><strong>Chcete víc?</strong> Přečtěte si i další příběh z rodokmenu.</p>
+    {ostatni.map((x) => <a class="btn" href={x.url}>{x.tlacitko || x.menu || x.title} →</a>)}
+    <a class="btn" href="/zajimavosti/">Zajímavosti z rodokmenu →</a>
+  </div>
+
+  {p.hlavni && docs.length > 0 && (
+    <>
+      <h2>Rodinné dokumenty a fotografie</h2>
+      <div class="docs">
+        {docs.map((d) => (
+          <figure><a href={`/img/${d.img}.jpg`} target="_blank" rel="noopener"><img src={`/img/${d.img}.jpg`} alt={d.caption} loading="lazy" /></a><figcaption>{d.caption}</figcaption></figure>
+        ))}
+      </div>
+    </>
+  )}
+</Base>

@@ -4,7 +4,7 @@ import { stats, lines, href, config, linesTitle } from '../lib/data.js';
 import fan from '../generated/fan.svg?raw';
 import FamilyMap from '../components/FamilyMap.astro';
 import site from '../data/site.json';
-import { frontmatter as pribeh } from '../generated/pribeh.md';
+import { pribehy } from '../lib/pribehy.js';
 const lineList = Object.values(lines).sort((a, b) => a.k - b.k);
 const uvod = config.uvod ?? {};
 const cards = config.zajimavosti_na_uvodu ?? [];
@@ -12,26 +12,29 @@ const cards = config.zajimavosti_na_uvodu ?? [];
 <Base title="" wide>
   <h1>{config.nazev || 'Rodokmen'}</h1>
 
-  {!!(uvod.nadpis || uvod.odstavce?.length) && (
-    <section class="teaser">
+  {!!(uvod.nadpis || uvod.odstavce?.length || pribehy.length > 0) && (
+    <section class="teaser teaser-uvod">
       <div>
         {uvod.nadpis && <h2>{uvod.nadpis}</h2>}
         {(uvod.odstavce ?? []).map((t) => <p>{t}</p>)}
-        {config.maPribeh && <a class="btn" href="/pribehy/">{config.pribeh?.tlacitko || `Přečíst: ${pribeh.title}`} →</a>}
+        {pribehy.length > 0 && (
+          <div class="uvod-pribehy">
+            <h3>Příběhy z rodokmenu</h3>
+            <ul>
+              {pribehy.map((p) => (
+                <li><a href={p.url}><strong>{p.title}</strong></a>{p.lead && <span class="small muted"> – {p.lead}</span>}</li>
+              ))}
+            </ul>
+            <a class="btn" href="/pribehy/">Všechny příběhy →</a>
+          </div>
+        )}
       </div>
       {uvod.foto && (
-        <a href={config.maPribeh ? '/pribehy/' : `/img/${uvod.foto}.jpg`}><img src={`/img/${uvod.foto}.jpg`} alt={uvod.foto_popis || ''} /></a>
+        <figure class="uvod-foto">
+          <a href={`/img/${uvod.foto}.jpg`}><img src={`/img/${uvod.foto}.jpg`} alt={uvod.foto_popis || ''} /></a>
+          {uvod.foto_popis && <figcaption class="small muted">{uvod.foto_popis}</figcaption>}
+        </figure>
       )}
-    </section>
-  )}
-
-  {config.maPribeh && !(uvod.nadpis || uvod.odstavce?.length) && (
-    <section class="teaser">
-      <div>
-        <h2>{pribeh.title}</h2>
-        {pribeh.lead && <p>{pribeh.lead}</p>}
-        <a class="btn" href="/pribehy/">{config.pribeh?.tlacitko || 'Přečíst příběh'} →</a>
-      </div>
     </section>
   )}
 
@@ -78,5 +81,5 @@ const cards = config.zajimavosti_na_uvodu ?? [];
 
   <h2>Rodokmen</h2>
   <div class="fan-preview"><a class="cover" href="/vejir/" aria-label="Otevřít vějíř předků přes celou obrazovku"></a><Fragment set:html={fan} /></div>
-  <p><a class="btn" href="/vejir/">Otevřít vějíř předků přes celou obrazovku →</a> <a href="/predci/" style="margin-left:1rem">nebo seznam všech předků</a></p>
+  <p><a class="btn" href="/strom/">Celý rodokmen – všichni předci →</a> <a class="btn" href="/vejir/">Otevřít vějíř předků přes celou obrazovku →</a> <a href="/predci/" style="margin-left:1rem">nebo seznam všech předků</a></p>
 </Base>

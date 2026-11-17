@@ -5,11 +5,11 @@ const siteName = config.nazev || 'Rodokmen';
 const { title, description = config.popis || siteName, wide = false, wider = false, full = false } = Astro.props;
 const path = Astro.url.pathname;
 const groups = [
-  [['/', 'Úvod'], ...(config.maPribeh ? [['/pribehy/', config.pribeh?.menu || 'Příběh rodu']] : []), ['/zajimavosti/', 'Zajímavosti']],
-  [['/rody/', 'Rody'], ['/mapa/', 'Mapa'], ['/vejir/', 'Vějíř'], ['/predci/', 'Předci'], ['/zapisy/', 'Zápisy'], ['/hledame/', 'Co hledáme']],
+  [['/', 'Úvod'], ...(config.maPribeh || config.dalsi_pribehy?.length ? [['/pribehy/', 'Příběhy']] : []), ['/zajimavosti/', 'Zajímavosti']],
+  [['/rody/', 'Rody'], ['/mapa/', 'Mapa'], ['/strom/', 'Celý strom'], ['/vejir/', 'Vějíř'], ['/predci/', 'Předci'], ['/zapisy/', 'Zápisy'], ['/hledame/', 'Co hledáme']],
   [['/hledat/', 'Hledat']],
 ];
-const current = (url) => ((url === '/' ? path === '/' : path.startsWith(url)) ? 'page' : undefined);
+const current = (url) => ((url === '/' ? path === url : path.startsWith(url)) ? 'page' : undefined);
 ---
 <!doctype html>
 <html lang="cs">

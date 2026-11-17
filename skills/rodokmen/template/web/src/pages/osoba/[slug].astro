@@ -18,6 +18,7 @@ const path = [...p.path].reverse().filter(Boolean);
   <div class="crumbs">
     {path.map((s, i) => <>{i > 0 && <span>→</span>}{s === p.slug ? <span>{people[s].name}</span> : <a href={href.person(s)}>{people[s].name.split(' ')[0]} {people[s].years}</a>}</>)}
   </div>
+  {p.portrait && <a class="portret" href={`/img/${p.portrait.img}.jpg`} target="_blank" rel="noopener"><img src={`/img/${p.portrait.img}.jpg`} alt={p.portrait.caption} title={p.portrait.caption} /></a>}
   <h1>{p.name}</h1>
   <div class="chips">
     {p.years && <span class="chip">{p.years}</span>}
@@ -65,7 +66,7 @@ const path = [...p.path].reverse().filter(Boolean);
   )}
 
   <h2>Předci</h2>
-  <div class="only-desktop"><Pedigree k={p.k} /></div>
+  <div class="only-desktop"><Pedigree k={p.k} /><p class="small"><a href="/strom/">Celý rodokmen se všemi předky (lze zvětšit) →</a></p></div>
   <div class="only-mobile"><MobileTree k={p.k} /></div>
 
   {p.docs.length > 0 && (

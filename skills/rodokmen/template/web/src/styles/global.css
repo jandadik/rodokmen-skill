@@ -101,6 +101,14 @@ th { font-weight: 600; color: #5a4632; background: #f6f0e6; }
 .line-card { border-top: 6px solid var(--c); }
 .prose { max-width: 46rem; }
 .prose p { margin: 0.6rem 0; }
+.prose figure { margin: 1.2rem 0; background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); padding: 0.6rem; }
+.prose figure img { display: block; max-width: 100%; height: auto; border-radius: calc(var(--radius) / 2); }
+.prose figcaption { font-size: 0.85rem; color: var(--muted); margin-top: 0.4rem; }
+.prose .foto-par { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 0.8rem; }
+.prose .foto-par figure { margin: 0; }
+.portret { float: right; margin: 0 0 0.8rem 1rem; }
+.portret img { width: 150px; max-height: 200px; object-fit: cover; border: 1px solid var(--line); border-radius: var(--radius); background: var(--paper); padding: 0.3rem; }
+@media (max-width: 640px) { .portret img { width: 100px; } }
 .docs { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem; }
 .docs figure { margin: 0; background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); padding: 0.6rem; }
 .docs figcaption { font-size: 0.85rem; color: var(--muted); margin-top: 0.4rem; }
@@ -206,3 +214,21 @@ main.full { max-width: none; padding: 0; }
 .card-link::after { content: '→'; position: absolute; top: 0.7rem; right: 0.9rem; font-size: 1.15rem; color: var(--accent); opacity: 0.55; transition: opacity 0.15s, transform 0.15s; }
 .card-link:hover::after { opacity: 1; transform: translateX(3px); }
 .card-link h3 { padding-right: 1.4rem; }
+
+/* úvodní box: text + seznam příběhů vlevo, celá fotka vpravo (bez ořezu) */
+.teaser-uvod { grid-template-columns: minmax(0, 1fr) auto; align-items: start; }
+.teaser-uvod .uvod-foto { margin: 0; max-width: 260px; text-align: center; }
+.teaser-uvod .uvod-foto img { width: auto; max-width: 100%; max-height: none; object-fit: contain; border-radius: 10px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15); }
+.teaser-uvod .uvod-foto figcaption { margin-top: 0.4rem; }
+.uvod-pribehy { margin-top: 1rem; padding-top: 0.8rem; border-top: 1px solid var(--line); }
+.uvod-pribehy h3 { margin: 0 0 0.4rem; }
+.uvod-pribehy ul { margin: 0 0 0.4rem; padding-left: 1.1rem; }
+.uvod-pribehy li { margin: 0.35rem 0; }
+@media (max-width: 760px) { .teaser-uvod { grid-template-columns: 1fr; } .teaser-uvod .uvod-foto { margin: 0 auto; } }
+
+/* rozcestník příběhů */
+.pribehy-seznam { display: grid; gap: 1rem; margin-top: 1.2rem; }
+.pribeh-karta { border-left: 5px solid var(--c, #e0952f); }
+.pribeh-karta h2 { border: 0; margin: 0 0 0.3rem; }
+.pribeh-karta p { margin: 0.3rem 0 0.6rem; }
+.pribeh-karta .btn { align-self: flex-start; width: fit-content; }
